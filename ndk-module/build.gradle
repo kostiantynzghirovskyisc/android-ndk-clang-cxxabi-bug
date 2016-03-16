@@ -1,0 +1,37 @@
+apply plugin: 'com.android.model.library'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def ndkDir = properties.getProperty('ndk.dir')
+
+model {
+    android {
+        compileSdkVersion 23
+        buildToolsVersion "23.0.2"
+
+        ndk {
+            moduleName 'looksery'
+            toolchain 'clang'
+            toolchainVersion '3.6'
+
+            // removing gabi++ headers and uncommenting this resolves problem
+            //cppFlags.add("-I/" + ndkDir + "/sources/cxx-stl/llvm-libc++abi/libcxxabi/include")
+
+            stl 'c++_shared'
+            abiFilters.addAll(["armeabi-v7a"])
+        }
+
+        defaultConfig {
+            minSdkVersion.apiLevel 16
+            targetSdkVersion.apiLevel 22
+            versionCode 1
+            versionName "1.0"
+        }
+
+        buildTypes {
+            release {
+                minifyEnabled false
+            }
+        }
+    }
+}
